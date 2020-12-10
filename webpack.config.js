@@ -7,12 +7,12 @@
 
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 module.exports = {
   entry: './src/js/index.js',
   output: {
-    filename: 'js/built.js',
-    path: resolve(__dirname, 'build')
+    filename: 'js/main.js',
+    path: resolve(__dirname, 'dist')
   },
   module: {
     rules: [
@@ -20,12 +20,19 @@ module.exports = {
       {
         // 处理less资源
         test: /\.less$/,
-        use: ['style-loader', 'css-loader', 'less-loader']
+        use: [
+          MiniCssExtractPlugin.loader,
+          // 'style-loader',
+          'css-loader', 'less-loader']
       },
       {
         // 处理css资源
         test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+        use: [
+          MiniCssExtractPlugin.loader,
+
+          // 'style-loader',
+          'css-loader']
       },
       {
         // 处理图片资源
@@ -57,8 +64,14 @@ module.exports = {
   },
   plugins: [
     // plugins的配置
+    // 功能：默认会创建一个空的HTML，自动引入打包输出的所有资源（JS/CSS）
+    // 需求：需要有结构的HTML文件
     new HtmlWebpackPlugin({
       template: './src/index.html'
+    }),
+    // 压缩css
+    new MiniCssExtractPlugin({
+      filename: 'css/main.css'
     })
   ],
   mode: 'development',
